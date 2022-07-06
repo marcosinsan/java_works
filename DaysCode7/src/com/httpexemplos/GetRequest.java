@@ -9,7 +9,7 @@ import java.time.Duration;
 
 public class GetRequest {
 
-	public static final String API_KEY = "k_4xf7zg1p";
+	public static final String API_KEY = "apikey";
 	public static final String URI_GET = "https://imdb-api.com/en/API/Search/" + API_KEY + "/Top250Movies";
 	
 	
