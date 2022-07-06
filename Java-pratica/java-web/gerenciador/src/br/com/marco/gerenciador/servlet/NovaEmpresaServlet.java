@@ -1,8 +1,11 @@
 package br.com.marco.gerenciador.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  * Servlet implementation class CadastroNovaEmpresa
  */
 @WebServlet("/novaEmpresa")
-public class CadastroNovaEmpresa extends HttpServlet {
+public class NovaEmpresaServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -21,19 +24,34 @@ public class CadastroNovaEmpresa extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		
+		System.out.println("Cadastrando nova empresa");		
 		
 		String novaEmpresa = request.getParameter("nome");
+		String dataAberturaEmpresa = request.getParameter("data");
+		
+		Date dataAbertura = null;
+		
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			dataAbertura = sdf.parse(dataAberturaEmpresa);
+		} catch (ParseException e) {
+		
+			throw new ServletException(e);
+		}
+		
 		Empresa empresa = new Empresa();
 		empresa.setNome(novaEmpresa);
+		empresa.setDataAbertura(dataAbertura);
+		
 		
 		Banco banco = new Banco();
 		banco.adiciona(empresa);
 		
+		// Chamar o JSP
 		
-		PrintWriter out = response.getWriter();
-		System.out.println("Empresa " + banco.getEmpresa() + " cadastrada com sucesso...");
-		out.println("<html><body>Empresa " + novaEmpresa + " cadastrada com sucesso!</body></html>");
+		RequestDispatcher rd = request.getRequestDispatcher("/novaEmpresaCriada.jsp");
+		request.setAttribute("empresa", empresa.getNome());
+		rd.forward(request, response);
 	}
 
 }
